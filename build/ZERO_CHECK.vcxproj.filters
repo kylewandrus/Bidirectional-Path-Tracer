@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\build\CMakeFiles\7c79ed29f8ddaf5b39a087773a04eb30\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{8AA50237-D590-30F6-8EBF-87C94235DABD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
