@@ -14,8 +14,12 @@ class AreaLight : public Light {
 
   virtual void preprocess();
   virtual double getLight(Color& light_color, Vector& light_direction,
-                          const RenderContext& context, const Point& pos) const;
-  Color areaShade(const Ray& ray, Vector normal) const;
+                          const RenderContext& context, const Point& pos);
+  virtual Point makeRandomPoint();
+  virtual Vector makeNormal(Point basePt);
+  virtual bool intersect(const Ray& ray);
+
+  //Color areaShade(const Ray& ray, Vector normal) const;
 
  private:
   AreaLight(const AreaLight&);
@@ -23,9 +27,7 @@ class AreaLight : public Light {
 
   Point cornerPos;
   Color color;
-  Vector a, b; // represent dimensions of rectangle  
-
-  float ls; // radiance scaling factor
+  Vector a, b; // represent dimensions of rectangle
 };
 
 #endif

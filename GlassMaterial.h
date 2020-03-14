@@ -1,16 +1,16 @@
 
-#ifndef LambertianMaterial_h
-#define LambertianMaterial_h
+#ifndef GlassMaterial_h
+#define GlassMaterial_h
 
 #include "Material.h"
 #include "Color.h"
 #include "Point.h"
 #include "Ray.h"
 
-class LambertianMaterial : public Material {
+class GlassMaterial : public Material {
  public:
-  LambertianMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective);
-  virtual ~LambertianMaterial();
+  GlassMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective);
+  virtual ~GlassMaterial();
 
   virtual Color shade(const RenderContext& context, const Ray& ray,
                      const HitRecord& hit, const Color& atten, int depth) const;
@@ -21,8 +21,8 @@ class LambertianMaterial : public Material {
   virtual void scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const;
 
  private:
-  LambertianMaterial(const LambertianMaterial&);
-  LambertianMaterial& operator=(const LambertianMaterial&);
+     GlassMaterial(const GlassMaterial&);
+     GlassMaterial& operator=(const GlassMaterial&);
 
   Color color;
   float Kd;
@@ -31,8 +31,6 @@ class LambertianMaterial : public Material {
   int n;
   bool isReflective;
 };
-
-
 
 class onb
 {

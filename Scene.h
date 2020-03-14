@@ -3,6 +3,7 @@
 #define Scene_h
 
 #include "Color.h"
+#include "PathNode.h"
 #include <string>
 #include <vector>
 
@@ -80,7 +81,8 @@ class Scene {
 
   void preprocess();
   void render();
-  Color traceRay(const RenderContext& context, const Ray& ray, const Color& attenuation, int depth) const;
+  Color backwardTraceRay(const RenderContext& context, const Ray& ray, const Color& attenuation, vector<PathNode*>) const;
+  vector<PathNode*> forwardTraceRay(const RenderContext& context, const Ray& ray, const Color& attenuation) const;
 
  private:
   Scene(const Scene&);
@@ -93,6 +95,7 @@ class Scene {
   Object* object;
   std::vector<Light*> lights;
   int maxRayDepth;
+  int minRayDepth;
   int numSamples;
   double minAttenuation;
 };

@@ -1,5 +1,5 @@
 
-#include "LambertianMaterial.h"
+#include "GlassMaterial.h"
 #include "HitRecord.h"
 #include "Light.h"
 #include "Point.h"
@@ -11,28 +11,28 @@
 #include "Math.h"
 using namespace std;
 
-LambertianMaterial::LambertianMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective)
+GlassMaterial::GlassMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective)
   :color(color), Kd(Kd), Ka(Ka), Ks(Ks), n(n), isReflective(isReflective)
 {
 }
 
-LambertianMaterial::~LambertianMaterial()
+GlassMaterial::~GlassMaterial()
 {
 }
 
-bool LambertianMaterial::getReflective() const {
+bool GlassMaterial::getReflective() const {
     return isReflective;
 }
 
-Color LambertianMaterial::getColor() const {
+Color GlassMaterial::getColor() const {
     return color;
 }
 
-float LambertianMaterial::getKs() const {
+float GlassMaterial::getKs() const {
     return Ks;
 }
 
-Color LambertianMaterial::shade(const RenderContext& context,
+Color GlassMaterial::shade(const RenderContext& context,
                                const Ray& ray, const HitRecord& hit, const Color&, int) const
 {
     const Scene* scene = context.getScene();
@@ -49,7 +49,10 @@ Color LambertianMaterial::shade(const RenderContext& context,
 
     const Object* world = scene->getObject();
 
-    Color light = scene->getAmbient()*Ka;
+    float na = 1.0; // index of refraction for air
+    float ng = 1.5; // index of refraction for glass
+
+    //Color light = scene->getAmbient()*Ka;
 
 #if 0
     for(vector<Light*>::const_iterator iter = lights.begin(); iter != lights.end(); iter++){
@@ -92,23 +95,7 @@ Color LambertianMaterial::shade(const RenderContext& context,
     return light * color;
 }
 
-// source for the following functions: https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html#importancesamplingmaterials
-
-void LambertianMaterial::scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const
+void GlassMaterial::scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const
 {
-    // generate 3 random numbers between -1 and 1
-    double rand1 = double(rand()) / double(RAND_MAX);
-    rand1 = -1.0 + 2.0 * rand1;
-    double rand2 = double(rand()) / double(RAND_MAX);
-    rand2 = -1.0 + 2.0 * rand2;
-    double rand3 = double(rand()) / double(RAND_MAX);
-    rand3 = -1.0 + 2.0 * rand3;
-    Vector randVec = Vector(rand1, rand2, rand3);
-
-    Vector point = Vector(hitpos);
-    Vector target = normal + point + randVec;
-    Vector dir = Vector(target - point);
-    dir.normalize();
-    scattered = Ray(hitpos, dir);
-    pdf = Dot(normal, scattered.direction()) / M_PI;
+     
 }

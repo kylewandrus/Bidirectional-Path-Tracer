@@ -307,7 +307,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\GlassMaterial.cc" />
     <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\AreaLight.cc" />
+    <ClInclude Include="..\GlassMaterial.h" />
+    <ClInclude Include="..\PathNode.h" />
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\AreaLight.h" />
     <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Background.cc" />
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Background.h" />
