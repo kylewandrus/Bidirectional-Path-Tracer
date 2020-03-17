@@ -15,7 +15,7 @@ class HitRecord {
   }
   ~HitRecord() {
   }
-  bool hit(double t, const Primitive* hit_prim, const Material* hit_matl) {
+  bool hit(double t, const Primitive* hit_prim, Material* hit_matl) {
     if(t > EPSILON && t < min){
       min = t;
       prim = hit_prim;
@@ -31,7 +31,7 @@ class HitRecord {
   const Primitive* getPrimitive() const {
     return prim;
   }
-  const Material* getMaterial() const {
+  Material* getMaterial() const {
     return matl;
   }
   template< typename T >
@@ -48,7 +48,7 @@ class HitRecord {
   }
  private:
   const Primitive* prim;
-  const Material* matl;
+  Material* matl;
   double min;
 
   char scratchdata[128];

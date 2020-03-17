@@ -2,9 +2,10 @@
 #include "AreaLight.h"
 #include <cstdlib>
 
-AreaLight::AreaLight(const Point& position, const Color& color, const Vector& a, const Vector& b)
+AreaLight::AreaLight(const Point& position, const Color& color, const Vector& a, const Vector& b, const Color& emit)
   : cornerPos(position), color(color), a(a), b(b)
 {
+    emission = emit;
 }
 
 AreaLight::~AreaLight()
@@ -16,7 +17,7 @@ void AreaLight::preprocess()
 }
 
 double AreaLight::getLight(Color& light_color, Vector& light_direction,
-                            const RenderContext&, const Point& hitpos)
+                            const RenderContext&, const Point& hitpos) const
 {
     // generate sample point on the light
     Point samplePt = makeRandomPoint();
@@ -28,7 +29,7 @@ double AreaLight::getLight(Color& light_color, Vector& light_direction,
     return len;
 }
 
-Point AreaLight::makeRandomPoint()
+Point AreaLight::makeRandomPoint() const
 {
     double rand1 = double(rand()) / double(RAND_MAX);
     double rand2 = double(rand()) / double(RAND_MAX);
@@ -46,15 +47,15 @@ Vector AreaLight::makeNormal(Point basePt)
     return Cross(vec1, vec2);
 }
 
-bool AreaLight::intersect(const Ray& ray)
+bool AreaLight::intersect(const Ray& ray, Point& hitpos)
 {
     Vector normal = makeNormal(cornerPos);
 
     double denom = Dot(ray.direction(), normal);
     if (Abs(denom) < 1.e-6 * -1) {
         float rayLen = (Dot(cornerPos - ray.origin(), normal) / denom);
-        Point intPt = ray.origin() + rayLen * ray.direction();
-        Vector intVec = intPt - cornerPos;
+        hitpos = ray.origin() + rayLen * ray.direction();
+        Vector intVec = hitpos - cornerPos;
 
         // project vector onto sides of the light
         float lenProj1 = Dot(intVec, a) / a.length();

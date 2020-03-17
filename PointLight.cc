@@ -1,9 +1,10 @@
 
 #include "PointLight.h"
 
-PointLight::PointLight(const Point& position, const Color& color)
-  : position(position), color(color)
+PointLight::PointLight(const Point& position, const Color& color, const Color& emit)
+    : position(position), color(color)
 {
+    emission = emit;
 }
 
 PointLight::~PointLight()

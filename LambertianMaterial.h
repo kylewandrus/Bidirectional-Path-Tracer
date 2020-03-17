@@ -13,7 +13,7 @@ class LambertianMaterial : public Material {
   virtual ~LambertianMaterial();
 
   virtual Color shade(const RenderContext& context, const Ray& ray,
-                     const HitRecord& hit, const Color& atten, int depth) const;
+                     const HitRecord& hit, const Light* light);
   virtual bool getReflective() const;
   virtual Color getColor() const;
   virtual float getKs() const;

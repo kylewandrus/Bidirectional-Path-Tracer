@@ -3,9 +3,10 @@
 xres 512
 yres 512
 filename "image.ppm"
-maxraydepth 4
+maxraydepth 5
+minraydepth 2
 minattenuation 0.2
-numSamples 100
+numSamples 10
 
 camera pinhole {
   eye [ -24.0, -2.0, 5.2 ]
@@ -25,6 +26,7 @@ light area {
   color [ 1, 1, 1 ]
   a [45.77, 45.77, 45.77]
   b [44.08, -48.16, 44.08]
+  emission [ .7, .7, .7 ]
 }
 
 

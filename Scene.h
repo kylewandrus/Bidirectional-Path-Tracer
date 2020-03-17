@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class Background;
 class Camera;
 class Color;
@@ -69,6 +71,9 @@ class Scene {
   void setMaxRayDepth(int rd) {
     maxRayDepth = rd;
   }
+  void setMinRayDepth(int rd) {
+      minRayDepth = rd;
+  }
   double getMinAttenuation() const {
     return minAttenuation;
   }
@@ -81,8 +86,10 @@ class Scene {
 
   void preprocess();
   void render();
-  Color backwardTraceRay(const RenderContext& context, const Ray& ray, const Color& attenuation, vector<PathNode*>) const;
-  vector<PathNode*> forwardTraceRay(const RenderContext& context, const Ray& ray, const Color& attenuation) const;
+  Color backwardTraceRay(const RenderContext& context, Ray& ray, vector<PathNode*> lightPath) const;
+  vector<PathNode*> forwardTraceRay(const RenderContext& context) const;
+
+  Color connectPaths(const RenderContext& context, const Point& hitpos, const Vector& normal, vector<PathNode*> lightPath) const;
 
  private:
   Scene(const Scene&);

@@ -1,0 +1,107 @@
+// This is a test scene for Specter.  Try running "specter test.scn".
+
+xres 512
+yres 512
+filename "image.ppm"
+maxraydepth 5
+minraydepth 2
+minattenuation 0.2
+numSamples 2
+
+camera pinhole {
+  eye [ -30.0, 0.0, 5.2 ]
+  lookat [ 1.0, 0.0, 3.5 ]
+  up [ 0.0, 0.0, 1.0 ]
+  hfov 22.0
+}
+
+background constant {
+  color [ 0.5, 0.8, 0.9 ]
+}
+
+ambient [ 0.6, 0.6, 0.6 ]
+
+light area {
+  position [ 5.0, -2.0, 7.0 ]
+  color [ 1, 1, 1 ]
+  a [-2.0, 0.0, 0.0]
+  b [0.0, -2.0, 0.0]
+  emission [ .7, .7, .7 ]
+}
+
+
+scene group {
+  sphere {
+    material lambertian {
+      color 1.0
+      Kd 0.7
+      Ka 0.3
+      Ks 0.3
+	  n 6
+    }
+    center [ 1.5, 0.0, 3.5 ]
+    radius 2.0
+  }
+  plane {
+    material lambertian {
+      color [ 0.83, 0.83, 0.83 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ 0.0, 0.0, 1.0 ]
+    point [ 0.0, 0.0, -0.1 ]
+  }
+  plane {
+    material lambertian {
+      color [ 0.83, 0.83, 0.83 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ 0.0, 0.0, -1.0 ]
+    point [ 0.0, 0.0, 8.0 ]
+  }
+
+  plane {
+    material lambertian {
+      color [ 0.0, 1.0, 0.0 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ 0.0, 1.0, 0.0 ]
+    point [ 0.0, -4.0, 0.0 ]
+  }
+  plane {
+    material lambertian {
+      color [ 1.0, 0.0, 0.0 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ 0.0, -1.0, 0.0 ]
+    point [ 0.0, 4.0, 0.0 ]
+  }
+
+  plane {
+    material lambertian {
+      color [ 0.83, 0.83, 0.83 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ -1.0, 0.0, 0.0 ]
+    point [ 8.0, 0.0, 0.0 ]
+  }
+  plane {
+    material lambertian {
+      color [ 0.83, 0.83, 0.83 ]
+      Kd 0.4
+      Ka 0.6
+      Ks 0
+    }
+    normal [ 1.0, 0.0, 0.0 ]
+    point [ -31.0, 0.0, 0.0 ]
+  }
+}

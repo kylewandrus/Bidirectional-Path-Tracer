@@ -430,19 +430,22 @@ Light *Parser::parsePointLight()
 {
   Point position( 0.0, 0.0, 10.0 );
   Color color( 1.0, 1.0, 1.0 );
+  Color emission(1.0, 1.0, 1.0);
   if ( peek( Token::left_brace ) )
     for ( ; ; )
     {
-      if ( peek( "position" ) )
-        position = parsePoint();
-      else if ( peek( "color" ) )
-        color = parseColor();
-      else if ( peek( Token::right_brace ) )
-        break;
+        if (peek("position"))
+            position = parsePoint();
+        else if (peek("color"))
+            color = parseColor();
+        else if (peek("emission"))
+            emission = parseColor();
+        else if (peek(Token::right_brace))
+            break;        
       else
-        throwParseException( "Expected `position', `color' or }." );
+        throwParseException( "Expected `position', `color', `emission' or }." );
     }
-  return new PointLight( position, color );
+  return new PointLight( position, color, emission );
 }
 
 Light* Parser::parseAreaLight()
@@ -451,6 +454,7 @@ Light* Parser::parseAreaLight()
     Color color(1.0, 1.0, 1.0);
     Vector a(0.0, 0.0, 0.0);
     Vector b(0.0, 0.0, 0.0);
+    Color emission(1.0, 1.0, 1.0);
     if (peek(Token::left_brace))
         for (; ; )
         {
@@ -458,6 +462,8 @@ Light* Parser::parseAreaLight()
                 position = parsePoint();
             else if (peek("color"))
                 color = parseColor();
+            else if (peek("emission"))
+                emission = parseColor();
             else if (peek("a"))
                 a = parseVector();
             else if (peek("b"))
@@ -465,9 +471,9 @@ Light* Parser::parseAreaLight()
             else if (peek(Token::right_brace))
                 break;
             else
-                throwParseException("Expected `position', `color', `a', `b' or }.");
+                throwParseException("Expected `position', `color', `emission', `a', `b' or }.");
         }
-    return new AreaLight(position, color, a, b);
+    return new AreaLight(position, color, a, b, emission);
 }
 
 Light *Parser::parseLight()
@@ -629,6 +635,8 @@ Scene *Parser::parseScene(
       yres = parseInteger();
     else if ( peek( "maxraydepth" ) )
       scene->setMaxRayDepth( parseInteger() );
+    else if (peek("minraydepth"))
+        scene->setMinRayDepth(parseInteger());
     else if ( peek( "numSamples" ) )
       scene->setNumSamples( parseInteger() );
     else if ( peek( "minattenuation" ) )

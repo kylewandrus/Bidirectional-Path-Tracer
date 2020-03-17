@@ -19,6 +19,9 @@
     <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\ConstantBackground.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\GlassMaterial.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Group.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,9 +76,6 @@
     <ClCompile Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\specter.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GlassMaterial.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\AreaLight.h">
@@ -94,6 +94,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\ConstantBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\GlassMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Group.h">
@@ -121,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\PathNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\PinholeCamera.h">
@@ -157,12 +163,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\Kyle\Documents\ecs275a\Programs\Bidirectional-Path-Tracer\Vector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GlassMaterial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PathNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

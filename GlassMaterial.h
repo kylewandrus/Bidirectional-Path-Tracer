@@ -13,12 +13,13 @@ class GlassMaterial : public Material {
   virtual ~GlassMaterial();
 
   virtual Color shade(const RenderContext& context, const Ray& ray,
-                     const HitRecord& hit, const Color& atten, int depth) const;
+                     const HitRecord& hit, const Light* light);
   virtual bool getReflective() const;
   virtual Color getColor() const;
   virtual float getKs() const;
 
   virtual void scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const;
+  float computeFresnel(const Vector& incident, const Vector& normal, float& n1, float& n2);
 
  private:
      GlassMaterial(const GlassMaterial&);
@@ -30,7 +31,10 @@ class GlassMaterial : public Material {
   float Ks;
   int n;
   bool isReflective;
+
+  Ray refractionRay;
 };
+
 
 class onb
 {

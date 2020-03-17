@@ -14,6 +14,7 @@ using namespace std;
 LambertianMaterial::LambertianMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective)
   :color(color), Kd(Kd), Ka(Ka), Ks(Ks), n(n), isReflective(isReflective)
 {
+    setType(LAMBERTIAN);
 }
 
 LambertianMaterial::~LambertianMaterial()
@@ -33,7 +34,7 @@ float LambertianMaterial::getKs() const {
 }
 
 Color LambertianMaterial::shade(const RenderContext& context,
-                               const Ray& ray, const HitRecord& hit, const Color&, int) const
+                               const Ray& ray, const HitRecord& hit, const Light* light)
 {
     const Scene* scene = context.getScene();
     const vector<Light*>& lights = scene->getLights();
@@ -49,47 +50,48 @@ Color LambertianMaterial::shade(const RenderContext& context,
 
     const Object* world = scene->getObject();
 
-    Color light = scene->getAmbient()*Ka;
+    Color result = scene->getAmbient()*Ka;
 
-#if 0
-    for(vector<Light*>::const_iterator iter = lights.begin(); iter != lights.end(); iter++){
-#else
-    Light*const* begin = &lights[0];
-    Light*const* end = &lights[0] + lights.size();
-    while(begin != end){
-#endif
-        // compute direction vector from light to hitpos
-        Color light_color;
-        Vector light_direction;
-        double dist = (*begin++)->getLight(light_color, light_direction, context, hitpos);
-        light_direction.normalize();
-        double cosphi = Dot(normal, light_direction);
+//#if 0
+//    for(vector<Light*>::const_iterator iter = lights.begin(); iter != lights.end(); iter++){
+//#else
+//    Light*const* begin = &lights[0];
+//    Light*const* end = &lights[0] + lights.size();
+//    while(begin != end){
+//#endif
 
-        Vector reflect_direction = 2 * Dot(normal, light_direction) * normal - light_direction;
-        reflect_direction.normalize();
+    // compute direction vector from light to hitpos
+    Color light_color;
+    Vector light_direction;
+    double dist = light->getLight(light_color, light_direction, context, hitpos);
+    light_direction.normalize();
+    double cosphi = Dot(normal, light_direction);
 
-        // multiply ray direction by -1 to use direction from hitpos back to eye
-        double cosbet = Dot(reflect_direction, ray.direction() * -1);
+    Vector reflect_direction = 2 * Dot(normal, light_direction) * normal - light_direction;
+    reflect_direction.normalize();
 
-        if(cosphi > 0){
-            // Cast shadow rays...
-            HitRecord shadowhit(dist);
-            Ray shadowray(hitpos, light_direction);
-            world->intersect(shadowhit, context, shadowray);
+    // multiply ray direction by -1 to use direction from hitpos back to eye
+    double cosbet = Dot(reflect_direction, ray.direction() * -1);
 
-            if (!shadowhit.getPrimitive()) {
-                // No shadows...
-                if (cosbet > 0) {
-                    light += light_color * (Kd * cosphi + Ks * pow(cosbet, n));
-                }
-                else {
-                    light += light_color * (Kd * cosphi);
-                }
+    if(cosphi > 0){
+        // Cast shadow rays...
+        HitRecord shadowhit(dist);
+        Ray shadowray(hitpos, light_direction);
+        world->intersect(shadowhit, context, shadowray);
+
+        if (!shadowhit.getPrimitive()) {
+            // No shadows...
+            if (cosbet > 0) {
+                result += light_color * (Kd * cosphi + Ks * pow(cosbet, n));
+            }
+            else {
+                result += light_color * (Kd * cosphi);
             }
         }
     }
+    //}
 
-    return light * color;
+    return result * color;
 }
 
 // source for the following functions: https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html#importancesamplingmaterials

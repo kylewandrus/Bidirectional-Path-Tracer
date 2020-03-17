@@ -9,11 +9,15 @@
 #include "Scene.h"
 #include "Vector.h"
 #include "Math.h"
+
 using namespace std;
+
+#define ATTEN 0.001
 
 GlassMaterial::GlassMaterial(const Color& color, float Kd, float Ka, float Ks, int n, bool isReflective)
   :color(color), Kd(Kd), Ka(Ka), Ks(Ks), n(n), isReflective(isReflective)
 {
+    setType(GLASS);
 }
 
 GlassMaterial::~GlassMaterial()
@@ -33,8 +37,12 @@ float GlassMaterial::getKs() const {
 }
 
 Color GlassMaterial::shade(const RenderContext& context,
-                               const Ray& ray, const HitRecord& hit, const Color&, int) const
+                               const Ray& ray, const HitRecord& hit, const Light* light)
 {
+    // relfection is used for color
+    // refraction is used for color and next ray direction
+
+    Color result(0, 0, 0);
     const Scene* scene = context.getScene();
     const vector<Light*>& lights = scene->getLights();
     Point hitpos = ray.origin() + ray.direction() * hit.minT();
@@ -54,48 +62,99 @@ Color GlassMaterial::shade(const RenderContext& context,
 
     //Color light = scene->getAmbient()*Ka;
 
-#if 0
-    for(vector<Light*>::const_iterator iter = lights.begin(); iter != lights.end(); iter++){
-#else
-    Light*const* begin = &lights[0];
-    Light*const* end = &lights[0] + lights.size();
-    while(begin != end){
-#endif
-        // compute direction vector from light to hitpos
-        Color light_color;
-        Vector light_direction;
-        double dist = (*begin++)->getLight(light_color, light_direction, context, hitpos);
-        light_direction.normalize();
-        double cosphi = Dot(normal, light_direction);
+    // compute direction vector from light to hitpos
+    Color light_color;
+    Vector light_direction;
+    double dist = light->getLight(light_color, light_direction, context, hitpos);
+    light_direction.normalize();
+    double cosphi = Dot(normal, light_direction);
 
-        Vector reflect_direction = 2 * Dot(normal, light_direction) * normal - light_direction;
-        reflect_direction.normalize();
+    // compute reflection
+    Vector reflect_direction = 2 * Dot(normal, light_direction) * normal - light_direction;
+    reflect_direction.normalize();
+    
+    // compute fresnel and assign indices of refraction
+    float n1, n2;
+    float kr = computeFresnel(ray.direction(), normal, n1, n2);
 
-        // multiply ray direction by -1 to use direction from hitpos back to eye
-        double cosbet = Dot(reflect_direction, ray.direction() * -1);
+    if (kr < 1) {
+        // compute refraction
+        float cost = Dot(-1 * ray.direction(), normal);
+        float sint = pow(n1 / n2, 2) * (1 - pow(cost, 2));
+        Vector refraction_direction = (n1 / n2) * ray.direction() + ((n1 / n2) * cost - sqrt(1 - pow(sint, 2))) * normal;
+        Point refractPos;
 
-        if(cosphi > 0){
-            // Cast shadow rays...
-            HitRecord shadowhit(dist);
-            Ray shadowray(hitpos, light_direction);
-            world->intersect(shadowhit, context, shadowray);
+        // check if ray is inside glass or not
+        if (Dot(ray.direction(), normal) < 0) {
+            refractPos = hitpos - (ATTEN * normal);
+        }
+        else {
+            refractPos = hitpos + (ATTEN * normal);
+        }
+        refractionRay = Ray(refractPos, refraction_direction);
+    }
+    
 
-            if (!shadowhit.getPrimitive()) {
-                // No shadows...
-                if (cosbet > 0) {
-                    light += light_color * (Kd * cosphi + Ks * pow(cosbet, n));
-                }
-                else {
-                    light += light_color * (Kd * cosphi);
-                }
+    // multiply ray direction by -1 to use direction from hitpos back to eye
+    double cosbet = Dot(reflect_direction, ray.direction() * -1);
+
+    if(cosphi > 0){
+        // Cast shadow rays...
+        HitRecord shadowhit(dist);
+        Ray shadowray(hitpos, light_direction);
+        world->intersect(shadowhit, context, shadowray);
+
+        if (!shadowhit.getPrimitive()) {
+            // No shadows...
+            if (cosbet > 0) {
+                //light += light_color * (Kd * cosphi + Ks * pow(cosbet, n));
+            }
+            else {
+                //light += light_color * (Kd * cosphi);
             }
         }
     }
 
-    return light * color;
+    return result * color;
 }
 
 void GlassMaterial::scatter(Point hitpos, Vector normal, Ray& scattered, float& pdf) const
 {
-     
+    scattered = refractionRay;
+}
+
+float GlassMaterial::computeFresnel(const Vector& incident, const Vector& normal, float& n1, float& n2)
+{
+    // source: https://www.sc ratchapixel.com/lessons/3d-basic-rendering/introdu ction-to-shading/reflection-refraction-fresnel
+
+    // n1 == incident index of refraction
+    // n2 == refracted index of refraction
+
+    float cosi = fmax(-1.0f, fmin(1.0f, Dot(incident, normal)));
+
+    // Compute sini using Snell's law
+    // air = 1.0, glass = 1.5
+    if (cosi > 0) {
+        n1 = 1.5;
+        n2 = 1.0;
+    }
+    else {
+        n1 = 1.0;
+        n2 = 1.5;
+    }
+    float sint = n1 / n2 * sqrtf(fmax(0.f, 1 - cosi * cosi));
+
+    // Total internal reflection
+    if (sint >= 1) {
+        return 1.0f;
+    }
+    else {
+        float cost = sqrtf(fmax(0.f, 1 - sint * sint));
+        cosi = fabsf(cosi);
+        float Rs = ((n2 * cosi) - (n1 * cost)) / ((n2 * cosi) + (n1 * cost));
+        float Rp = ((n1 * cosi) - (n2 * cost)) / ((n1 * cosi) + (n2 * cost));
+        return (Rs * Rs + Rp * Rp) / 2;
+    }
+    // As a consequence of the conservation of energy, transmittance is given by:
+    // kt = 1 - kr;
 }

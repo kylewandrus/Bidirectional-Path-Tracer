@@ -7,18 +7,29 @@
 
 class PathNode {
  public:
-    PathNode(Ray ray1, int depth1, Color color1) {
+    PathNode(Ray ray1, Color color1, Vector normal1) {
         ray = ray1;
-        depth = depth1;
         color = color1;
+        normal = normal1;
     }
-    virtual ~PathNode();
+    ~PathNode() {}
+
+    Point getRayOrig() {
+        return ray.origin();
+    }
+    Vector getNormal() {
+        return normal;
+    }
+    Color getColor() {
+        return color;
+    }
 
  private:
      float pdf; // cumulative pdf
+
      Color color;
-     int depth;
      Ray ray; // outgoing ray from node
+     Vector normal;
 };
 
 #endif
